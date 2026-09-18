@@ -54,9 +54,9 @@ function AdminDashboard() {
       <div className="mt-10 rounded-2xl border border-border bg-card p-6">
         <h2 className="font-display text-lg font-bold">Quick start</h2>
         <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-          <li>Add a news article — it will appear immediately on the public News page when marked Published.</li>
-          <li>Upload gallery photos by pasting an image URL (Unsplash, your CDN, etc.).</li>
-          <li>Review incoming admissions and update their status to keep your pipeline organized.</li>
+          <li>Create a rich News post with any combination of text, images, videos and downloadable documents.</li>
+          <li>Upload Gallery photos or videos directly, then publish immediately or leave them for Super Admin review.</li>
+          <li>Review complete admission forms, supporting documents, statuses and private follow-up notes.</li>
         </ul>
       </div>
     </div>

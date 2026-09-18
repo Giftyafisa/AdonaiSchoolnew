@@ -1,38 +1,36 @@
 import { createFileRoute, Outlet, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Newspaper, Image as ImageIcon, ClipboardList, LogOut, ExternalLink } from "lucide-react";
+import { getAdminAccess, type AdminAccess } from "@/lib/admin-access";
+import { LayoutDashboard, Newspaper, Image as ImageIcon, ClipboardList, LogOut, ExternalLink, Users } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
 });
 
-const nav = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/admin/news", label: "News", icon: Newspaper, exact: false },
-  { to: "/admin/gallery", label: "Gallery", icon: ImageIcon, exact: false },
-  { to: "/admin/applications", label: "Applications", icon: ClipboardList, exact: false },
-] as const;
-
 function AdminLayout() {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [email, setEmail] = useState<string>("");
+  const [access, setAccess] = useState<AdminAccess | null>(null);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) { navigate({ to: "/auth" }); return; }
-      if (!cancelled) setEmail(u.user.email ?? "");
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", u.user.id);
-      const admin = (roles ?? []).some((r) => r.role === "admin");
-      if (!cancelled) { setIsAdmin(admin); setChecking(false); }
+      const result = await getAdminAccess();
+      if (!result) {
+        const { data } = await supabase.auth.getUser();
+        if (!data.user) {
+          navigate({ to: "/auth" });
+          return;
+        }
+      }
+      if (!cancelled) {
+        setAccess(result);
+        setEmail(result?.email ?? "");
+        setChecking(false);
+      }
     })();
     return () => { cancelled = true; };
   }, [navigate]);
@@ -47,15 +45,13 @@ function AdminLayout() {
     return <div className="grid min-h-dvh place-items-center text-sm text-muted-foreground">Loading admin portal…</div>;
   }
 
-  if (!isAdmin) {
+  if (!access) {
     return (
       <div className="grid min-h-dvh place-items-center bg-secondary/40 p-6">
         <div className="max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-[var(--shadow-soft)]">
           <h1 className="font-display text-2xl font-bold">Awaiting access</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            You are signed in as <span className="font-semibold text-foreground">{email}</span>, but your account
-            does not yet have admin access. Please contact the site administrator and share this email so they can
-            grant you the <span className="font-mono">admin</span> role.
+            You are signed in as <span className="font-semibold text-foreground">{email || "this account"}</span>, but the account is not active in the school admin portal.
           </p>
           <button onClick={signOut} className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
             <LogOut className="h-4 w-4" /> Sign out
@@ -64,6 +60,14 @@ function AdminLayout() {
       </div>
     );
   }
+
+  const nav = [
+    { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true, show: true },
+    { to: "/admin/news", label: "News", icon: Newspaper, exact: false, show: access.canNews },
+    { to: "/admin/gallery", label: "Gallery", icon: ImageIcon, exact: false, show: access.canGallery },
+    { to: "/admin/applications", label: "Applications", icon: ClipboardList, exact: false, show: access.canAdmissions },
+    { to: "/admin/staff", label: "Staff access", icon: Users, exact: false, show: access.isSuperAdmin },
+  ] as const;
 
   return (
     <div className="grid min-h-dvh grid-cols-1 bg-secondary/40 lg:grid-cols-[260px_1fr]">
@@ -76,7 +80,7 @@ function AdminLayout() {
           </div>
         </Link>
         <nav className="mt-6 flex flex-row flex-wrap gap-1 lg:flex-col">
-          {nav.map(({ to, label, icon: Icon, exact }) => (
+          {nav.filter((item) => item.show).map(({ to, label, icon: Icon, exact }) => (
             <Link
               key={to}
               to={to}
@@ -91,6 +95,9 @@ function AdminLayout() {
         <div className="mt-6 hidden border-t border-border pt-4 lg:block">
           <div className="text-[11px] uppercase tracking-widest text-muted-foreground">Signed in</div>
           <div className="mt-1 truncate text-xs font-medium">{email}</div>
+          <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold text-primary">
+            <Users className="h-3 w-3" /> {access.isSuperAdmin ? "Super Admin" : "Staff"}
+          </div>
           <a href="/" target="_blank" rel="noopener" className="mt-3 inline-flex items-center gap-1 text-xs text-primary hover:underline">
             <ExternalLink className="h-3 w-3" /> View live site
           </a>
