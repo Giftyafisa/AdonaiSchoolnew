@@ -48,7 +48,7 @@ export function Navbar() {
           />
           <div className="min-w-0 leading-tight">
             <div
-              className={`truncate font-display text-base font-bold sm:text-lg ${scrolled ? "text-primary" : "text-white"}`}
+              className={`truncate font-display text-sm font-bold sm:text-base ${scrolled ? "text-primary" : "text-white"}`}
             >
               Adonai International School
             </div>
@@ -60,7 +60,10 @@ export function Navbar() {
           </div>
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
+        <nav
+          aria-label="Primary"
+          className="hidden items-center gap-0.5 lg:flex"
+        >
           {links.map((l) => {
             const active = Boolean(
               matchRoute({ to: l.to, fuzzy: l.to !== "/" }),
@@ -70,7 +73,7 @@ export function Navbar() {
                 key={l.to}
                 to={l.to}
                 className={[
-                  "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "rounded-md px-2 py-2 text-sm font-medium transition-colors",
                   active
                     ? scrolled
                       ? "bg-primary text-primary-foreground"
@@ -90,7 +93,7 @@ export function Navbar() {
           <a
             href="tel:+233240218814"
             className={[
-              "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition",
+              "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-2 py-2 text-sm font-medium transition",
               scrolled
                 ? "border-border bg-background/60 text-foreground hover:border-primary hover:text-primary"
                 : "border-white/50 bg-white/10 text-white hover:border-white hover:bg-white/20",
@@ -101,7 +104,7 @@ export function Navbar() {
           <Link
             to="/admissions"
             className={[
-              "inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold shadow-[var(--shadow-elegant)] transition",
+              "inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full px-3 py-2.5 text-sm font-semibold shadow-[var(--shadow-elegant)] transition",
               scrolled
                 ? "bg-primary text-primary-foreground hover:bg-primary-glow"
                 : "bg-gold text-gold-foreground hover:brightness-105",
@@ -117,7 +120,7 @@ export function Navbar() {
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           className={[
-            "inline-flex h-11 w-11 items-center justify-center rounded-md transition",
+            "inline-flex h-11 w-11 items-center justify-center rounded-md transition lg:hidden",
             scrolled
               ? "text-foreground hover:bg-secondary"
               : "text-white hover:bg-white/15",
