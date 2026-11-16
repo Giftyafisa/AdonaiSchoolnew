@@ -18,7 +18,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as NewsRouteImport } from './routes/news'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -71,11 +70,6 @@ const NewsRoute = NewsRouteImport.update({
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -123,7 +117,6 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRouteWithChildren
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/news/$slug': typeof NewsSlugRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
@@ -141,7 +134,6 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRouteWithChildren
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/news/$slug': typeof NewsSlugRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
@@ -160,7 +152,6 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRouteWithChildren
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/news/$slug': typeof NewsSlugRoute
   '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
@@ -180,7 +171,6 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/news'
-    | '/sitemap.xml'
     | '/admin'
     | '/news/$slug'
     | '/admin/applications'
@@ -198,7 +188,6 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/news'
-    | '/sitemap.xml'
     | '/news/$slug'
     | '/admin/applications'
     | '/admin/gallery'
@@ -216,7 +205,6 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/news'
-    | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/news/$slug'
     | '/_authenticated/admin/applications'
@@ -236,7 +224,6 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
   NewsRoute: typeof NewsRouteWithChildren
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -302,13 +289,6 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -413,7 +393,6 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
   NewsRoute: NewsRouteWithChildren,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
